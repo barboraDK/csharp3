@@ -7,22 +7,22 @@ using ToDoList.Domain.Models;
 [Route("api/[Controller]")]
 public class ToDoItemsController : ControllerBase
 {
-    private static readonly List<ToDoItem> Items = []; //je to private, nazev by mel zacinat malym pismenkem
+    public static readonly List<ToDoItem> items = [];
     [HttpPost]
     public IActionResult Create(ToDoItemCreateRequestDto request)
     {
         try
         {
             var item = request.ToDomain();
-            item.ToDoItemId = Items.Count == 0 ? 1 : Items.Max(o => o.ToDoItemId) + 1;
-            Items.Add(item);
+            item.ToDoItemId = items.Count == 0 ? 1 : items.Max(o => o.ToDoItemId) + 1;
+            items.Add(item);
 
         }
         catch (Exception ex)
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
-        return Created();
+        return Ok();
     }
 
     [HttpGet]
@@ -50,7 +50,14 @@ public class ToDoItemsController : ControllerBase
 
             //plus dodelat funcionalitu kdyz Items is null - pokud jsi fajnsmekr tak to muzes skusit udelat na jeden radek :)
 
-            return Ok(Items);
+            var itemsToSend = items?.Select(ToDoItemGetResponseDto.FromDomain) ?? Enumerable.Empty<ToDoItemGetResponseDto>();
+
+            if (!itemsToSend.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(itemsToSend);
         }
         catch (Exception ex)
         {
@@ -63,12 +70,13 @@ public class ToDoItemsController : ControllerBase
     {
         try
         {
-            var item = Items.FirstOrDefault(i => i.ToDoItemId == toDoItemId);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return Ok(item); //opet, chceme to poslat ve formatu ToDoItemsGetResponseDto
+            var item = items.FirstOrDefault(i => i.ToDoItemId == toDoItemId);
+
+            return item == null
+            ? NotFound()
+            : Ok(ToDoItemGetResponseDto.FromDomain(item));
+
+            //opet, chceme to poslat ve formatu ToDoItemsGetResponseDto
             /*
             opet pokud se toho nebojis, musez skusit udelat to kod
              if (item == null)
@@ -91,7 +99,7 @@ public class ToDoItemsController : ControllerBase
     {
         //nebudu protestovat proti tomuto zpusobu :) funguje to a je to jeden ze zpusobu
         //slo by to taky pres FindIndex nebo Find
-        var existingProduct = Items.FirstOrDefault(item => item.ToDoItemId == toDoItemId);
+        var existingProduct = items.FirstOrDefault(item => item.ToDoItemId == toDoItemId);
         if (existingProduct == null)
         {
             return NotFound();
@@ -108,7 +116,7 @@ public class ToDoItemsController : ControllerBase
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
 
-        return NoContent();
+        return Ok();
     }
 
     [HttpDelete("{toDoItemId:int}")]
@@ -119,19 +127,18 @@ public class ToDoItemsController : ControllerBase
             //taky nebudu rozporovat, jen by bylo lepsi pouzit funkci Find
             //First pouzivat kdyz jsem si celkem jisty ze tam ten objekt najdu a FirstOrDefault pokud nechci odchytavat vyjimky kdyby tam nahodou nebyl
             //muze to byl lehce zavadejici pri pozdejsim cteni, ale je to funkcne v poradku :)
-            var item = Items.FirstOrDefault(i => i.ToDoItemId == toDoItemId);
+            var item = items.FirstOrDefault(i => i.ToDoItemId == toDoItemId);
             if (item == null)
             {
                 return NotFound();
             }
 
-            Items.Remove(item);
+            items.Remove(item);
         }
         catch (Exception ex)
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
-
         }
-        return NoContent();
+        return Ok();
     }
 }
