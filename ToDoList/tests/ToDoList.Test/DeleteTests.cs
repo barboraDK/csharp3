@@ -23,6 +23,7 @@ public class DeleteTests
         var result = controller.DeleteById(1);
 
         // Assert
+        //test failuje protoze v kontroler vraci Ok, ale test je v poradku, to je chyba v kontroleru
         var noContentResult = Assert.IsType<NoContentResult>(result);
         Assert.Equal(StatusCodes.Status204NoContent, noContentResult.StatusCode);
         var deletedItem = ToDoItemsController.items.FirstOrDefault(i => i.ToDoItemId == 1);
