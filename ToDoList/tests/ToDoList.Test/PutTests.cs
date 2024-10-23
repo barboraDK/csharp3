@@ -28,6 +28,8 @@ public class PutTests
         // Assert
         var okResult = Assert.IsType<OkResult>(result);
         Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+
+        //chtelo by to kontrolu ze se spravne zmenilo Name, Description a IsCompleted + by tohle slo udelat jako parametrizovany test
     }
 
     [Fact]

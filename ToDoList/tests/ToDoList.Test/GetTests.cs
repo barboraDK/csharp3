@@ -21,9 +21,11 @@ public class GetTests
 
         // Act
         var result = controller.Read();
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var value = Assert.IsAssignableFrom<IEnumerable<ToDoItemGetResponseDto>>(okResult.Value);
+        var okResult = Assert.IsType<OkObjectResult>(result); //toto uz patri pod Assert
+        var value = Assert.IsAssignableFrom<IEnumerable<ToDoItemGetResponseDto>>(okResult.Value); //toto uz patri pod Assert
 
+
+        //Tomuto rikam robustni test :) palec nahoru
         // Assert
         Assert.Equal(2, value.Count());
         var itemList = value.ToList();
@@ -40,7 +42,7 @@ public class GetTests
     }
 
     [Fact]
-    public void Get_NoItmes_ReturnsNotFound()
+    public void Get_NoItmes_ReturnsNotFound() //preklep ve jmenu :)
     {
         // Arrange
         var controller = new ToDoItemsController();
@@ -58,7 +60,7 @@ public class GetTests
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
-    public void GetById_ReturnsOkResult_WithItem(int id)
+    public void GetById_ReturnsOkResult_WithItem(int id) //GetById je samostatna metoda - Get a GetById, chtelo by to podle me samostatny soubor
     {
         // Arrange
         var controller = new ToDoItemsController();
@@ -74,10 +76,12 @@ public class GetTests
         Assert.NotNull(result);
         Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
         Assert.Equal(id, item.Id);
+
+        //tady by taky stalo za to otestovat ze jsme dostali nezmenene Name, Description, IsCompleted jak jsi to delala v Get_AllItems_ReturnsAllItems testu
     }
 
     [Fact]
-    public void GetById_ReturnsNotFound_WhenItemDoesNotExist()
+    public void GetById_ReturnsNotFound_WhenItemDoesNotExist() //GetById je samostatna metoda - Get a GetById, chtelo by to podle me samostatny soubor
     {
         // Arrange
         var controller = new ToDoItemsController();
