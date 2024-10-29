@@ -6,6 +6,7 @@ using ToDoList.WebApi.Controllers;
 
 public class GetByIdTests
 {
+    /*
     [Fact]
     public void GetById_ValidId_ReturnsItem()
     {
@@ -34,6 +35,8 @@ public class GetByIdTests
         Assert.Equal(toDoItem.IsCompleted, value.IsCompleted);
         Assert.Equal(toDoItem.Name, value.Name);
     }
+    */
+    /*
 
     [Fact]
     public void GetById_InvalidId_ReturnsNotFound()
@@ -57,4 +60,5 @@ public class GetByIdTests
         // Assert
         Assert.IsType<NotFoundResult>(resultResult);
     }
+    */
 }

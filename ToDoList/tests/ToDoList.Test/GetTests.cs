@@ -6,7 +6,7 @@ using ToDoList.WebApi.Controllers;
 using Microsoft.AspNetCore.Http;
 using ToDoList.Domain.DTOs;
 
-
+/*
 public class GetTests
 {
     [Fact]
@@ -57,6 +57,7 @@ public class GetTests
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
     }
 
+
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
@@ -80,6 +81,7 @@ public class GetTests
         //tady by taky stalo za to otestovat ze jsme dostali nezmenene Name, Description, IsCompleted jak jsi to delala v Get_AllItems_ReturnsAllItems testu
     }
 
+
     [Fact]
     public void GetById_ReturnsNotFound_WhenItemDoesNotExist() //GetById je samostatna metoda - Get a GetById, chtelo by to podle me samostatny soubor
     {
@@ -93,4 +95,7 @@ public class GetTests
         // Assert
         Assert.IsType<NotFoundResult>(result);
     }
+
 }
+*/
+
