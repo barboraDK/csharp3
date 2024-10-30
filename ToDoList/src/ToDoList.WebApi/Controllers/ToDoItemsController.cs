@@ -37,7 +37,10 @@ public class ToDoItemsController : ControllerBase
         try
         {
 
-            List<ToDoItem> itemsToSendList = context.ToDoItems.ToList();
+            List<ToDoItem> itemsToSendList = context.ToDoItems.ToList(); //muzeme inicializovat jako var
+
+            //spatna podminka, ted se kontroler nechova tak jak bylo zadani 03.1 kdy jsme si implementovali zakladni chovani kontroleru
+            //v zadani je `404 Not Found`, pokud je list úkolů `null`, ne pokud je list prazdny (tedy nema v sobe zadny ukol)
             if (itemsToSendList.Count == 0)
             {
                 return NotFound();
