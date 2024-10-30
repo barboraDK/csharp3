@@ -3,27 +3,36 @@ using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence;
-using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
 
 [ApiController]
 [Route("api/[Controller]")]
 public class ToDoItemsController : ControllerBase
 {
     private readonly ToDoItemsContext context;
+    private readonly IRepository<ToDoItem> repository;
 
-    public ToDoItemsController(ToDoItemsContext context)
+    public ToDoItemsController(ToDoItemsContext context, IRepository<ToDoItem> repository)
     {
         this.context = context;
+        this.repository = repository;
     }
+
+    /*
+    public ToDoItemsController(IRepository<ToDoItem> repository)
+    {
+        this.repository = repository;
+    }
+    */
+
+
     [HttpPost]
     public ActionResult<ToDoItemGetResponseDto> Create(ToDoItemCreateRequestDto request)
     {
+        var item = request.ToDomain();
         try
         {
-            var item = request.ToDomain();
-            context.ToDoItems.Add(item);
-            context.SaveChanges();
-
+            repository.Create(item);
         }
         catch (Exception ex)
         {
