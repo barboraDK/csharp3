@@ -2,29 +2,18 @@ namespace ToDoList.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
-using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 
 [ApiController]
 [Route("api/[Controller]")]
 public class ToDoItemsController : ControllerBase
 {
-    private readonly ToDoItemsContext context;
     private readonly IRepository<ToDoItem> repository;
 
-    public ToDoItemsController(ToDoItemsContext context, IRepository<ToDoItem> repository)
-    {
-        this.context = context;
-        this.repository = repository;
-    }
-
-    /*
     public ToDoItemsController(IRepository<ToDoItem> repository)
     {
         this.repository = repository;
     }
-    */
-
 
     [HttpPost]
     public ActionResult<ToDoItemGetResponseDto> Create(ToDoItemCreateRequestDto request)
@@ -38,7 +27,11 @@ public class ToDoItemsController : ControllerBase
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
-        return Ok();
+
+        return CreatedAtAction(
+            nameof(ReadById),
+            new { toDoItemId = item.ToDoItemId },
+            ToDoItemGetResponseDto.FromDomain(item));
     }
 
     [HttpGet]
@@ -46,17 +39,11 @@ public class ToDoItemsController : ControllerBase
     {
         try
         {
+            var itemsToSendList = repository.Read();
 
-            List<ToDoItem> itemsToSendList = context.ToDoItems.ToList(); //muzeme inicializovat jako var
-
-            //spatna podminka, ted se kontroler nechova tak jak bylo zadani 03.1 kdy jsme si implementovali zakladni chovani kontroleru
-            //v zadani je `404 Not Found`, pokud je list úkolů `null`, ne pokud je list prazdny (tedy nema v sobe zadny ukol)
-            if (itemsToSendList.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(itemsToSendList);
+            return (itemsToSendList == null)
+            ? NotFound()
+            : Ok(itemsToSendList);
         }
         catch (Exception ex)
         {
@@ -69,7 +56,7 @@ public class ToDoItemsController : ControllerBase
     {
         try
         {
-            var item = context.ToDoItems.Find(toDoItemId);
+            var item = repository.ReadById(toDoItemId);
 
             return item == null
             ? NotFound()
@@ -84,25 +71,27 @@ public class ToDoItemsController : ControllerBase
     [HttpPut("{toDoItemId:int}")]
     public IActionResult UpdateById(int toDoItemId, [FromBody] ToDoItemUpdateRequestDto request)
     {
-        var item = context.ToDoItems.Find(toDoItemId);
-        if (item == null)
-        {
-            return NotFound();
-        }
-
         try
         {
-            item.Name = request.Name;
-            item.Description = request.Description;
-            item.IsCompleted = request.IsCompleted;
-            context.SaveChanges();
+            var updatedItem = new ToDoItem
+            {
+                Name = request.Name,
+                Description = request.Description,
+                IsCompleted = request.IsCompleted
+            };
+
+            var item = repository.UpdateById(toDoItemId, updatedItem);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
         catch (Exception ex)
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
-
-        return Ok();
     }
 
     [HttpDelete("{toDoItemId:int}")]
@@ -110,19 +99,17 @@ public class ToDoItemsController : ControllerBase
     {
         try
         {
-            var item = context.ToDoItems.Find(toDoItemId);
-
+            var item = repository.DeleteById(toDoItemId);
             if (item == null)
             {
                 return NotFound();
             }
-            context.ToDoItems.Remove(item);
-            context.SaveChanges();
+            return NoContent();
         }
         catch (Exception ex)
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
         }
-        return Ok();
+
     }
 }

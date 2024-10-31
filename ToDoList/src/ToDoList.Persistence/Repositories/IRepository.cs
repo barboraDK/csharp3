@@ -1,9 +1,10 @@
 namespace ToDoList.Persistence.Repositories;
 
-using System.Runtime.InteropServices;
-using ToDoList.Domain.Models;
-
 public interface IRepository<T> where T : class
 {
     void Create(T item);
+    List<T> Read();
+    T? ReadById(int itemId);
+    T? UpdateById(int itemId, T item);
+    T? DeleteById(int itemId);
 }
