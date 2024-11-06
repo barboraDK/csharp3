@@ -81,7 +81,7 @@ public class ToDoItemsController : ControllerBase
             };
 
             var item = repository.UpdateById(toDoItemId, updatedItem);
-            if (item == null)
+            if (item == null) //cely return by sel udelat na jeden radek - stejne jak to mas v ReadById
             {
                 return NotFound();
             }
@@ -100,7 +100,7 @@ public class ToDoItemsController : ControllerBase
         try
         {
             var item = repository.DeleteById(toDoItemId);
-            if (item == null)
+            if (item == null) //cely return by sel udelat na jeden radek - stejne jak to mas v ReadById
             {
                 return NotFound();
             }
