@@ -1,0 +1,18 @@
+﻿@page "/AhojSvete"
+
+<PageTitle>@title</PageTitle>
+
+<h1>@ahojSvete</h1>
+
+@Pozdrav()
+
+@code
+{
+    string title = "Nas title";
+    string ahojSvete = "Ahoj svete z jine stranky";
+
+    string Pozdrav()
+    {
+        return "Vitej v moji aplikaci z metody";
+    }
+}
