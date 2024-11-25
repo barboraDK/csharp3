@@ -12,7 +12,7 @@ using Xunit.Sdk;
 public class PostUnitTests
 {
     [Fact]
-    public void Post_ValidRequest_ReturnsOkResult()
+    public async Task Post_ValidRequest_ReturnsOkResult()
     {
         /*
         // Arrange

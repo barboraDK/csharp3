@@ -13,10 +13,10 @@ using ToDoList.WebApi.Controllers;
 public class GetUnitTests
 {
     [Fact]
-    public void Get_ReadAllAndSomeItemIsAvailable_ReturnsOk()
+    public async Task Get_ReadAllAndSomeItemIsAvailable_ReturnsOk()
     {
         //Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
         /*
         repositoryMock.When().Do();
@@ -36,7 +36,7 @@ public class GetUnitTests
 
 
         //Act
-        var result = controller.Read();
+        var result = await controller.Read();
         var resultResult = result.Result;
 
         //Assert
@@ -45,15 +45,15 @@ public class GetUnitTests
     }
 
     [Fact]
-    public void Get_ReadAllNoItemAvailable_ReturnNotFound()
+    public async Task Get_ReadAllNoItemAvailable_ReturnNotFound()
     {
         //Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
         repositoryMock.Read().ReturnsNull();
 
         //Act
-        var result = controller.Read();
+        var result = await controller.Read();
         var resultResult = result.Result;
 
         //Assert
@@ -63,15 +63,15 @@ public class GetUnitTests
     }
 
     [Fact]
-    public void Get_ReadAllExceptionOccured_ReturnInternalServerError()
+    public async Task Get_ReadAllExceptionOccured_ReturnInternalServerError()
     {
         //Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
         repositoryMock.Read().Throws(new Exception());
 
         //Act
-        var result = controller.Read();
+        var result = await controller.Read();
         var resultResult = result.Result;
 
         //Assert
