@@ -1,10 +1,10 @@
 namespace ToDoList.Persistence.Repositories;
 
-public interface IRepository<T> where T : class
+public interface IRepositoryAsync<T> where T : class
 {
-    void Create(T item);
-    List<T> Read();
-    T? ReadById(int itemId);
-    T? UpdateById(int itemId, T item);
-    T? DeleteById(int itemId);
+    Task Create(T item);
+    Task<List<T>> Read();
+    Task<T>? ReadById(int itemId);
+    Task<T>? UpdateById(int itemId, T item);
+    Task<T>? DeleteById(int itemId);
 }

@@ -8,20 +8,20 @@ using ToDoList.Persistence.Repositories;
 [Route("api/[Controller]")]
 public class ToDoItemsController : ControllerBase
 {
-    private readonly IRepository<ToDoItem> repository;
+    private readonly IRepositoryAsync<ToDoItem> repository;
 
-    public ToDoItemsController(IRepository<ToDoItem> repository)
+    public ToDoItemsController(IRepositoryAsync<ToDoItem> repository)
     {
         this.repository = repository;
     }
 
     [HttpPost]
-    public ActionResult<ToDoItemGetResponseDto> Create(ToDoItemCreateRequestDto request)
+    public async Task<ActionResult<ToDoItemGetResponseDto>> Create(ToDoItemCreateRequestDto request)
     {
         var item = request.ToDomain();
         try
         {
-            repository.Create(item);
+            await repository.Create(item);
         }
         catch (Exception ex)
         {
@@ -35,15 +35,15 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<ToDoItemGetResponseDto>> Read()
+    public async Task<ActionResult<IEnumerable<ToDoItemGetResponseDto>>> Read()
     {
         try
         {
-            var itemsToSendList = repository.Read();
+            var itemsToSendList = await repository.Read();
 
             return (itemsToSendList == null)
             ? NotFound()
-            : Ok(itemsToSendList);
+            : Ok(itemsToSendList.Select(ToDoItemGetResponseDto.FromDomain));
         }
         catch (Exception ex)
         {
@@ -52,11 +52,11 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpGet("{toDoItemId:int}")]
-    public ActionResult<ToDoItemGetResponseDto> ReadById(int toDoItemId)
+    public async Task<ActionResult<ToDoItemGetResponseDto>> ReadById(int toDoItemId)
     {
         try
         {
-            var item = repository.ReadById(toDoItemId);
+            var item = await repository.ReadById(toDoItemId);
 
             return item == null
             ? NotFound()
@@ -69,7 +69,7 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpPut("{toDoItemId:int}")]
-    public IActionResult UpdateById(int toDoItemId, [FromBody] ToDoItemUpdateRequestDto request)
+    public async Task<IActionResult> UpdateById(int toDoItemId, [FromBody] ToDoItemUpdateRequestDto request)
     {
         try
         {
@@ -80,7 +80,7 @@ public class ToDoItemsController : ControllerBase
                 IsCompleted = request.IsCompleted
             };
 
-            var item = repository.UpdateById(toDoItemId, updatedItem);
+            var item = await repository.UpdateById(toDoItemId, updatedItem);
             if (item == null) //cely return by sel udelat na jeden radek - stejne jak to mas v ReadById
             {
                 return NotFound();
@@ -95,11 +95,11 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpDelete("{toDoItemId:int}")]
-    public IActionResult DeleteById(int toDoItemId)
+    public async Task<IActionResult> DeleteById(int toDoItemId)
     {
         try
         {
-            var item = repository.DeleteById(toDoItemId);
+            var item = await repository.DeleteById(toDoItemId);
             if (item == null) //cely return by sel udelat na jeden radek - stejne jak to mas v ReadById
             {
                 return NotFound();

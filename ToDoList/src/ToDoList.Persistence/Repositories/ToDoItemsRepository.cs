@@ -1,8 +1,9 @@
 namespace ToDoList.Persistence.Repositories;
 
+using Microsoft.EntityFrameworkCore;
 using ToDoList.Domain.Models;
 
-public class ToDoItemsRepository : IRepository<ToDoItem>
+public class ToDoItemsRepository : IRepositoryAsync<ToDoItem>
 {
     private readonly ToDoItemsContext context;
 
@@ -10,39 +11,39 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
     {
         this.context = context;
     }
-    public void Create(ToDoItem item)
+    public async Task Create(ToDoItem item)
     {
-        context.ToDoItems.Add(item);
-        context.SaveChanges();
+        await context.ToDoItems.AddAsync(item);
+        await context.SaveChangesAsync();
     }
-    public List<ToDoItem> Read()
+    public async Task<List<ToDoItem>> Read()
     {
-        return context.ToDoItems.ToList();
+        return await context.ToDoItems.ToListAsync();
     }
-    public ToDoItem? ReadById(int itemId)
+    public async Task<ToDoItem?> ReadById(int itemId)
     {
-        return context.ToDoItems.Find(itemId);
+        return await context.ToDoItems.FindAsync(itemId);
 
     }
-    public ToDoItem? UpdateById(int itemId, ToDoItem item)
+    public async Task<ToDoItem?> UpdateById(int itemId, ToDoItem item)
     {
-        var existingItem = context.ToDoItems.Find(itemId);
+        var existingItem = await context.ToDoItems.FindAsync(itemId);
         if (existingItem != null)
         {
             existingItem.Name = item.Name;
             existingItem.Description = item.Description;
             existingItem.IsCompleted = item.IsCompleted;
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
         return existingItem;
     }
-    public ToDoItem? DeleteById(int itemId)
+    public async Task<ToDoItem?> DeleteById(int itemId)
     {
-        var item = context.ToDoItems.Find(itemId);
+        var item = await context.ToDoItems.FindAsync(itemId);
         if (item != null)
         {
             context.ToDoItems.Remove(item);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
         return item;
     }
