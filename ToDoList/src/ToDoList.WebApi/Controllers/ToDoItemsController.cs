@@ -77,16 +77,15 @@ public class ToDoItemsController : ControllerBase
             {
                 Name = request.Name,
                 Description = request.Description,
-                IsCompleted = request.IsCompleted
+                IsCompleted = request.IsCompleted,
+                Category = request.Category
             };
 
             var item = await repository.UpdateById(toDoItemId, updatedItem);
-            if (item == null) //cely return by sel udelat na jeden radek - stejne jak to mas v ReadById
-            {
-                return NotFound();
-            }
 
-            return NoContent();
+            return item == null
+            ? NotFound()
+            : NoContent();
         }
         catch (Exception ex)
         {
@@ -100,11 +99,10 @@ public class ToDoItemsController : ControllerBase
         try
         {
             var item = await repository.DeleteById(toDoItemId);
-            if (item == null) //cely return by sel udelat na jeden radek - stejne jak to mas v ReadById
-            {
-                return NotFound();
-            }
-            return NoContent();
+
+            return item == null
+            ? NotFound()
+            : NoContent();
         }
         catch (Exception ex)
         {

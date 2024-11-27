@@ -1,7 +1,6 @@
 ﻿namespace ToDoList.Persistence;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ToDoList.Domain.Models;
 
 public class ToDoItemsContext : DbContext
@@ -10,7 +9,7 @@ public class ToDoItemsContext : DbContext
     public ToDoItemsContext(string connectionString = "Data Source=../../data/localdb.db")
     {
         this.connectionString = connectionString;
-        this.Database.Migrate();
+        Database.Migrate();
     }
 
     public DbSet<ToDoItem> ToDoItems { get; set; }
