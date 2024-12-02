@@ -1,46 +1,57 @@
-namespace ToDoList.Test;
-using Microsoft.AspNetCore.Http;
+namespace ToDoList.Test.IntegrationTests;
+
 using Microsoft.AspNetCore.Mvc;
-using ToDoList.WebApi.Controllers;
 using ToDoList.Domain.Models;
-/*
+using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
+using ToDoList.WebApi.Controllers;
+
 public class DeleteTests
 {
-    public static void PrepareItems()
-    {
-        ToDoItemsController.items.Clear();
-        ToDoItemsController.items.Add(new ToDoItem { ToDoItemId = 1, Name = "Item 1", Description = "First Item", IsCompleted = false });
-    }
-
     [Fact]
-    public void DeleteById_ReturnsNoContent_WhenDeleteIsSuccessful()
+    public void Delete_ValidId_ReturnsNoContent()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        PrepareItems();
+        var context = new ToDoItemsContext("Data Source=../../../../../data/localdb.db");
+        var repository = new ToDoItemsRepository(context);
+        var controller = new ToDoItemsController(repository);
+        var toDoItem = new ToDoItem
+        {
+            Name = "Jmeno",
+            Description = "Popis",
+            IsCompleted = false
+        };
+        context.ToDoItems.Add(toDoItem);
+        context.SaveChanges();
 
         // Act
-        var result = controller.DeleteById(1);
+        var result = controller.DeleteById(toDoItem.ToDoItemId);
 
         // Assert
-        //test failuje protoze v kontroler vraci Ok, ale test je v poradku, to je chyba v kontroleru
-        var noContentResult = Assert.IsType<NoContentResult>(result);
-        Assert.Equal(StatusCodes.Status204NoContent, noContentResult.StatusCode);
-        var deletedItem = ToDoItemsController.items.FirstOrDefault(i => i.ToDoItemId == 1);
-        Assert.Null(deletedItem);
+        Assert.IsType<NoContentResult>(result);
     }
 
     [Fact]
-    public void DeleteById_ReturnsNotFound_WhenItemDoesNotExist()
+    public void Delete_InvalidId_ReturnsNotFound()
     {
         // Arrange
-        var controller = new ToDoItemsController();
+        var context = new ToDoItemsContext("Data Source=../../../../../data/localdb.db");
+        var repository = new ToDoItemsRepository(context);
+        var controller = new ToDoItemsController(repository);
+        var toDoItem = new ToDoItem
+        {
+            Name = "Jmeno",
+            Description = "Popis",
+            IsCompleted = false
+        };
+        context.ToDoItems.Add(toDoItem);
+        context.SaveChanges();
 
         // Act
-        var result = controller.DeleteById(999);
+        var invalidId = -1;
+        var result = controller.DeleteById(invalidId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
     }
 }
-*/

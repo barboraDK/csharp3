@@ -1,44 +1,37 @@
-namespace ToDoList.Test;
+namespace ToDoList.Test.IntegrationTests;
+
 using Microsoft.AspNetCore.Mvc;
-using Xunit;
-using ToDoList.WebApi.Controllers;
 using ToDoList.Domain.DTOs;
-using Microsoft.AspNetCore.Http;
-/*
+using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
+using ToDoList.WebApi.Controllers;
+
 public class PostTests
 {
     [Fact]
-    public void Post_ValidRequest_ReturnsOkResult()
+    public void Post_ValidRequest_ReturnsNewItem()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        var request = new ToDoItemCreateRequestDto("Test Name", "Test Description", false);
+        var context = new ToDoItemsContext("Data Source=../../../../../data/localdb.db");
+        var repository = new ToDoItemsRepository(context);
+        var controller = new ToDoItemsController(repository);
+        var request = new ToDoItemCreateRequestDto(
+            Name: "Jmeno",
+            Description: "Popis",
+            IsCompleted: false
+        );
 
         // Act
         var result = controller.Create(request);
+        var resultResult = result.Result;
+        var value = result.GetValue();
 
         // Assert
-        var createdResult = Assert.IsType<OkResult>(result);
-        Assert.Equal(StatusCodes.Status200OK, createdResult.StatusCode);
+        Assert.IsType<CreatedAtActionResult>(resultResult);
+        Assert.NotNull(value);
+
+        Assert.Equal(request.Description, value.Description);
+        Assert.Equal(request.IsCompleted, value.IsCompleted);
+        Assert.Equal(request.Name, value.Name);
     }
-
-    [Fact]
-    public void Post_MultipleItems_CreatesWithCorrectId()
-    {
-        // Arrange
-        var controller = new ToDoItemsController();
-        var firstRequest = new ToDoItemCreateRequestDto("First Item", "First Description", false);
-        var secondRequest = new ToDoItemCreateRequestDto("Second Item", "Second Description", false);
-
-        // Act
-        controller.Create(firstRequest);
-        controller.Create(secondRequest);
-
-        // Assert
-        Assert.Equal(2, ToDoItemsController.items.Count);
-        Assert.Equal(1, ToDoItemsController.items[0].ToDoItemId);
-        Assert.Equal(2, ToDoItemsController.items[1].ToDoItemId);
-    }
-
 }
-*/

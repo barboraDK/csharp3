@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence.Repositories;
+using ToDoList.Persistence.Repositories;
 
 [ApiController]
 [Route("api/[Controller]")]
@@ -12,6 +13,7 @@ public class ToDoItemsController : ControllerBase
 
     public ToDoItemsController(IRepositoryAsync<ToDoItem> repository)
     {
+        this.repository = repository;
         this.repository = repository;
     }
 
