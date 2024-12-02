@@ -1,16 +1,18 @@
 ﻿@using ToDoList.Frontend.Clients
 @using ToDoList.Frontend.Views
 @inject IToDoItemsClient ToDoItemsClient
+@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
 <h1>Dashboard</h1>
 
-<table>
-    <thead>
-        <tr>
-            <td><button @onclick="OrderById">Order by Id</button></td>
-            <td><button @onclick="OrderByName">Order by Name</button></td>
-        </tr>
+<table class="table table-hover mt-5">
+    <thead class="table-dark">
+        <th>Id</th>
+        <th>Name</th>
+        <th>Completed</th>
+        <th>Description</th>
+        <th>Actions</th>
     </thead>
     <tbody>
         @if (toDoItems is null)
@@ -22,17 +24,25 @@
         {
             @foreach (var toDoItem in toDoItems)
             {
-                <tr>
+                <tr class=@TypeOfRowBasedOnToDoItemState(toDoItem.IsCompleted)>
                     <td>@toDoItem.ToDoItemId</td>
                     <td>@toDoItem.Name</td>
                     <td>@toDoItem.IsCompleted</td>
                     <td>@toDoItem.Description</td>
+                    <td>
+                        <button class="btn btn-success" @onclick="() => EditItem(toDoItem)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteItem(toDoItem)">Delete</button>
+                        <button class="btn btn-warning"
+                            @onclick="() => ToggleCompletion(toDoItem)">@ToggleCompletionInstructions(toDoItem.IsCompleted)</button>
+                    </td>
                 </tr>
             }
         }
 
     </tbody>
 </table>
+<button class="btn btn-success" @onclick="OrderById">Order by Id</button>
+<button class="btn btn-success" @onclick="OrderByName">Order by Name</button>
 
 @code
 {
@@ -42,14 +52,41 @@
     }
     private List<ToDoItemView>? toDoItems;
 
-    void OrderById()
+    private string TypeOfRowBasedOnToDoItemState(bool isCompleted)
+    {
+        return isCompleted ? "table-success" : "table-secondary";
+    }
+
+    public void OrderById()
     {
         toDoItems = toDoItems?.OrderBy(item => item.ToDoItemId).ToList();
     }
 
-    void OrderByName()
+    public void OrderByName()
     {
         toDoItems = toDoItems?.OrderBy(item => item.Name).ToList();
+    }
+
+    public void EditItem(ToDoItemView toDoItem)
+    {
+        NavigationManager.NavigateTo($"editToDoItem/{toDoItem.ToDoItemId}");
+    }
+
+    public async Task DeleteItem(ToDoItemView toDoItem)
+    {
+        await ToDoItemsClient.DeleteItemAsync(toDoItem);
+        toDoItems = toDoItems?.Where(item => item.ToDoItemId != toDoItem.ToDoItemId).ToList();
+    }
+
+    public async Task ToggleCompletion(ToDoItemView toDoItem)
+    {
+        toDoItem.IsCompleted = !toDoItem.IsCompleted;
+        await ToDoItemsClient.UpdateItemAsync(toDoItem);
+    }
+
+    private string ToggleCompletionInstructions(bool isCompleted)
+    {
+        return isCompleted ? "Mark as Incomplete" : "Mark as Complete";
     }
 
 }
