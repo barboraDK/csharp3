@@ -9,19 +9,24 @@
 
 @if (ToDoItem is not null)
 {
-        <EditForm Model="ToDoItem" FormName="EditToDoItem" OnSubmit="Submit">
-            <div class="mt-3">
-                <label class="form-label" for="Name">Name:</label>
-                <InputText id="Name" @bind-Value="ToDoItem.Name" />
-            </div>
-            <InputText id="Name" @bind-Value="ToDoItem.Name" />
-            <InputText id="Description" @bind-Value="ToDoItem.Description" />
-            <InputText id="Category" @bind-Value="ToDoItem.Category" />
-            <InputCheckbox id="IsCompleted" @bind-Value="ToDoItem.IsCompleted" />
-            <button type="submit">Submit</button>
-        </EditForm>
+    <EditForm Model="ToDoItem" FormName="EditToDoItem" OnValidSubmit="Submit"> @*OnSubmit -> OnValidSubmit*@
+        <DataAnnotationsValidator />
+        <label for="Name" class="form-label">Name:</label>
+        <InputText id="Name" class="form-control" @bind-Value="ToDoItem.Name" />
+        <ValidationMessage For="() => ToDoItem.Name" />
+        <label for="Description" class="form-label">Description:</label>
+        <InputText id="Description" class="form-control" @bind-Value="ToDoItem.Description" />
+        <ValidationMessage For="() => ToDoItem.Description" />
+        <label for="Category" class="form-label">Category:</label>
+        <InputText id="Category" class="form-control" @bind-Value="ToDoItem.Category" />
+        <ValidationMessage For="() => ToDoItem.Category" />
+        <label for="IsCompleted" class="form-check-label">IsCompleted:</label>
+        <InputCheckbox id="IsCompleted" class="form-check" @bind-Value="ToDoItem.IsCompleted" />
+        <ValidationMessage For="() => ToDoItem.IsCompleted" />
+        <button type="submit">Submit</button>
+    </EditForm>
 
-        <button class="btn btn-primary" @onclick="ReturnToMain">Cancel</button>
+    <button class="btn btn-primary" @onclick="ReturnToMain">Cancel</button>
 
     @*
     @ToDoItem.Name
@@ -35,9 +40,16 @@
 
 @code
 {
+    public delegate void ToDoItemViewProcessingDelegate(ToDoItemView item);
+
+    private ToDoItemViewProcessingDelegate SubmitDelegate;
+
+
+
     protected override async Task OnInitializedAsync()
     {
         ToDoItem = await ToDoItemsClient.ReadItemByIdAsync(ItemId);
+        SubmitDelegate += LogSubmit;
     }
 
     [Parameter]
@@ -48,6 +60,7 @@
 
     public async Task Submit()
     {
+        SubmitDelegate?.Invoke(ToDoItem);
         await ToDoItemsClient.UpdateItemAsync(ToDoItem);
         NavigationManager.NavigateTo("/");
     }
@@ -56,4 +69,10 @@
     {
         NavigationManager.NavigateTo("/");
     }
+
+    public void LogSubmit(ToDoItemView item)
+    {
+        Console.WriteLine($"Id: {item}");
+    }
 }
+using ToDoList.Domain.Models;
