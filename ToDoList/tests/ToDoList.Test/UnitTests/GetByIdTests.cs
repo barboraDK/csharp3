@@ -8,11 +8,11 @@ using ToDoList.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using NSubstitute.ExceptionExtensions;
 using NSubstitute.ReturnsExtensions;
-/*
+
 public class GetByIdUnitTests
 {
     [Fact]
-    public void Get_ReadByIdWhenSomeItemAvailable_ReturnsOk()
+    public async Task Get_ReadByIdWhenSomeItemAvailable_ReturnsOk()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
@@ -21,7 +21,7 @@ public class GetByIdUnitTests
         repositoryMock.ReadById(someId).Returns(new ToDoItem { Name = "testItem", Description = "testDescription", IsCompleted = false });
 
         // Act
-        var result = controller.ReadById(someId);
+        var result = await controller.ReadById(someId);
         var resultResult = result.Result;
 
         // Assert
@@ -30,7 +30,7 @@ public class GetByIdUnitTests
     }
 
     [Fact]
-    public void Get_ReadByIdWhenItemIsNull_ReturnsNotFound()
+    public async Task Get_ReadByIdWhenItemIsNull_ReturnsNotFound()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
@@ -39,7 +39,7 @@ public class GetByIdUnitTests
         repositoryMock.ReadById(someId).ReturnsNull();
 
         // Act
-        var result = controller.ReadById(someId);
+        var result = await controller.ReadById(someId);
         var resultResult = result.Result;
 
         // Assert
@@ -48,7 +48,7 @@ public class GetByIdUnitTests
     }
 
     [Fact]
-    public void Get_ReadByIdUnhandledException_ReturnsInternalServerError()
+    public async Task Get_ReadByIdUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
@@ -57,7 +57,7 @@ public class GetByIdUnitTests
         repositoryMock.ReadById(someId).Throws(new Exception());
 
         // Act
-        var result = controller.ReadById(someId);
+        var result = await controller.ReadById(someId);
         var resultResult = result.Result;
 
         // Assert
@@ -67,4 +67,4 @@ public class GetByIdUnitTests
     }
 
 }
-*/
+

@@ -7,7 +7,7 @@ using ToDoList.WebApi.Controllers;
 using ToDoList.Persistence.Repositories;
 using ToDoList.Domain.Models;
 using Microsoft.AspNetCore.Http;
-/*
+
 public class PostUnitTests
 {
     [Fact]
@@ -41,7 +41,7 @@ public class PostUnitTests
     }
 
     [Fact]
-    public void Post_CreateUnhandledException_ReturnsInternalServerError()
+    public async Task Post_CreateUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
@@ -55,7 +55,7 @@ public class PostUnitTests
         repositoryMock.When(r => r.Create(Arg.Any<ToDoItem>())).Do(r => throw new Exception());
 
         // Act
-        var result = controller.Create(request);
+        var result = await controller.Create(request);
         var resultResult = result.Result;
 
         // Assert
@@ -63,4 +63,4 @@ public class PostUnitTests
         Assert.Equivalent(new StatusCodeResult(StatusCodes.Status500InternalServerError), resultResult);
     }
 }
-*/
+

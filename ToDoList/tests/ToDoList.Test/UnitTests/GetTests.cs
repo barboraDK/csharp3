@@ -8,11 +8,11 @@ using ToDoList.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using NSubstitute.ExceptionExtensions;
 using NSubstitute.ReturnsExtensions;
-/*
+
 public class GetUnitTests
 {
     [Fact]
-    public void Get_ReadWhenSomeItemAvailable_ReturnsOk()
+    public async Task Get_ReadWhenSomeItemAvailable_ReturnsOk()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
@@ -20,7 +20,7 @@ public class GetUnitTests
         repositoryMock.Read().Returns([new ToDoItem { Name = "testItem", Description = "testDescription", IsCompleted = false }]);
 
         // Act
-        var result = controller.Read();
+        var result = await controller.Read();
         var resultResult = result.Result;
 
         // Assert
@@ -29,7 +29,7 @@ public class GetUnitTests
     }
 
     [Fact]
-    public void Get_ReadWhenNoItemAvailable_ReturnsNotFound()
+    public async Task Get_ReadWhenNoItemAvailable_ReturnsNotFound()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
@@ -37,7 +37,7 @@ public class GetUnitTests
         repositoryMock.Read().ReturnsNull();
 
         // Act
-        var result = controller.Read();
+        var result = await controller.Read();
         var resultResult = result.Result;
 
         // Assert
@@ -46,16 +46,15 @@ public class GetUnitTests
     }
 
     [Fact]
-    public void Get_ReadUnhandledException_ReturnsInternalServerError()
+    public async Task Get_ReadUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
-        //repositoryMock.When(r => r.ReadAll()).Do(r => throw new Exception());
         repositoryMock.Read().Throws(new Exception());
 
         // Act
-        var result = controller.Read();
+        var result = await controller.Read();
         var resultResult = result.Result;
 
         // Assert
@@ -65,4 +64,4 @@ public class GetUnitTests
     }
 
 }
-*/
+
