@@ -18,26 +18,26 @@
     <tbody>
         @if (toDoItems is null)
         {
-                <p>nacitam</p>
+            <p>nacitam</p> @*Preferoval bych anglicky text kdyz vsechno ostatni je anglicky taky :) ale to je drobnost*@
         }
 
         @if (toDoItems is not null)
         {
             @foreach (var toDoItem in toDoItems)
             {
-                        <tr class=@TypeOfRowBasedOnToDoItemState(toDoItem.IsCompleted)>
-                            <td>@toDoItem.ToDoItemId</td>
-                            <td>@toDoItem.Name</td>
-                            <td>@toDoItem.IsCompleted</td>
-                            <td>@toDoItem.Description</td>
-                            <td>@toDoItem.Category</td>
-                            <td>
-                                <button class="btn btn-success" @onclick="() => EditItem(toDoItem)">Edit</button>
-                                <button class="btn btn-danger" @onclick="() => DeleteItem(toDoItem)">Delete</button>
-                                <button class="btn btn-warning"
-                                    @onclick="() => ToggleCompletion(toDoItem)">@ToggleCompletionInstructions(toDoItem.IsCompleted)</button>
-                            </td>
-                        </tr>
+                <tr class=@TypeOfRowBasedOnToDoItemState(toDoItem.IsCompleted)>
+                    <td>@toDoItem.ToDoItemId</td>
+                    <td>@toDoItem.Name</td>
+                    <td>@toDoItem.IsCompleted</td>
+                    <td>@toDoItem.Description</td>
+                    <td>@toDoItem.Category</td>
+                    <td>
+                        <button class="btn btn-success" @onclick="() => EditItem(toDoItem)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteItem(toDoItem)">Delete</button>
+                        <button class="btn btn-warning"
+                            @onclick="() => ToggleCompletion(toDoItem)">@ToggleCompletionInstructions(toDoItem.IsCompleted)</button>
+                    </td>
+                </tr>
             }
         }
 
