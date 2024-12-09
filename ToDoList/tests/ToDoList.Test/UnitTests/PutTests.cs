@@ -74,7 +74,6 @@ public class PutUnitTests
         var someId = 1;
         var readToDoItem = new ToDoItem { Name = "Jmeno", Description = "Popis", IsCompleted = false, ToDoItemId = someId };
 
-        repositoryMock.ReadById(Arg.Any<int>()).Returns(readToDoItem);
         repositoryMock.When(r => r.UpdateById(someId, Arg.Any<ToDoItem>())).Do(r => throw new Exception());
 
         // Act

@@ -16,9 +16,8 @@ public class DeleteUnitTests
         // Arrange
         var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         var controller = new ToDoItemsController(repositoryMock);
-        //mohli bychom to napamovat tak aby to vracelo pouze pokud dostane id = someId :) tento komentar plati pro vlastne skoro vsechny tve nasledujici mockovani
-        repositoryMock.DeleteById(Arg.Any<int>()).Returns(new ToDoItem { Name = "testItem", Description = "testDescription", IsCompleted = false });
         var someId = 1;
+        repositoryMock.DeleteById(someId).Returns(new ToDoItem { Name = "testItem", Description = "testDescription", IsCompleted = false });
 
         // Act
         var result = await controller.DeleteById(someId);
